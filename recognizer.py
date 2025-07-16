@@ -11,11 +11,11 @@ import paho.mqtt.client as mqtt
 from face_processor import *
 
 # MQTT Configuration
-"""MQTT_BROKER_ADDRESS = '192.168.45.115'
+"""MQTT_BROKER_ADDRESS = '192...'
 MQTT_BROKER_PORT = 1883 
-MQTT_CLIENT_ID = "h3s4if5snwex1s48248y"
-MQTT_USERNAME = "whci9cx9ifv0xbayda45"
-MQTT_PASSWORD = 'qmgfiay3oilhzxki868i'
+MQTT_CLIENT_ID = "_______"
+MQTT_USERNAME = "________"
+MQTT_PASSWORD = '_____'
 MQTT_DOOR_OPEN_TOPIC = "v1/devices/me/telemetry" # This topic MUST match what your door device subscribes to.
 """
 
