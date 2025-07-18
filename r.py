@@ -21,12 +21,12 @@ print("---------------------------------------")
 
 
 # --- MQTT Configuration ---
-MQTT_BROKER_ADDRESS = '192.168.45.115'
-MQTT_BROKER_PORT = 1883
-MQTT_CLIENT_ID = "h3s4if5snwex1s48248y" # Ensure unique client ID
-MQTT_USERNAME = "whci9cx9ifv0xbayda45"
-MQTT_PASSWORD = 'qmgfiay3oilhzxki868i'
-MQTT_DOOR_OPEN_TOPIC = "v1/devices/me/telemetry"
+MQTT_BROKER_ADDRESS = ''
+MQTT_BROKER_PORT = 
+MQTT_CLIENT_ID = "" # Ensure unique client ID
+MQTT_USERNAME = ""
+MQTT_PASSWORD = ""
+MQTT_DOOR_OPEN_TOPIC = ""
 
 # --- MQTT Callbacks (for VERSION2 API) ---
 def on_connect(client, userdata, flags, rc, properties=None):
