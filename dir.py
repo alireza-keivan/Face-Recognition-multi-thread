@@ -9,7 +9,7 @@ known_face_encodings = []
 known_faces_names = []
 
 # Directory where known face images are stored
-KNOWN_FACES_DIR = "known_faces"
+KNOWN_FACES_DIR = "known_faces/captured_known_faces"
 
 # File to save/load pre-calculated encodings
 ENCODINGS_FILE = "known_faces_data.pkl"

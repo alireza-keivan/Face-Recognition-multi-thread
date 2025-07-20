@@ -1,0 +1,32 @@
+{"camera_settings":{
+        "url": "rtsp://192.168.49.24:554/ch01.264",
+        "stream_id" :"0",
+        "fps_limit": "",
+        "OUTPUT_WINDOW_NAME" : "Face Recognition Stream",
+        "WINDOW_WIDTH" : "1200",
+        "WINDOW_HEIGHT": "1000"
+        },
+
+    "face_recognition_settings":{ 
+        "PROCESS_FRAME_SCALE": 0.3,
+        "RECOGNITION_TOLERANCE": 0.5,
+        "DOOR_OPEN_COOLDOWN": 10,
+        "RESET_DOOR_TIMER": 10
+    },
+
+    "directories":{
+        "output_path": "/home/alireza/Documents/face_recognition/captured",
+        "unknown_output_path": "/home/alireza/Documents/face_recognition/unknown_captured",
+        "KNOWN_FACES_DIR" :"/home/alireza/Documents/face_recognition/known_faces/captured_known_faces",
+        "ENCODINGS_FILE" : "known_faces_data.pkl"
+    },
+
+    "mqtt_settings":{
+        "MQTT_BROKER_ADDRESS" : "192.168.45.115",
+        "MQTT_BROKER_PORT" : 1883,
+        "MQTT_CLIENT_ID" : "h3s4if5snwex1s48248y", 
+        "MQTT_USERNAME" : "whci9cx9ifv0xbayda45",
+        "MQTT_PASSWORD" : "qmgfiay3oilhzxki868i",
+        "MQTT_DOOR_OPEN_TOPIC" : "v1/devices/me/telemetry"
+
+}}
