@@ -258,25 +258,11 @@ class FaceRecognitionSystem:
         os.makedirs(self.UNKNOWN_FACES_OUTPUT_DIR, exist_ok=True)
         print(f"Output directories ensured: {self.KNOWN_FACES_OUTPUT_DIR}, {self.UNKNOWN_FACES_OUTPUT_DIR}")
 
-    def _send_door_open_command(self, recognized_person_name="!"):
-        """Sends an MQTT command to open the door."""
-        if self.mqtt_client and self.mqtt_client.is_connected():
-            topic = self.MQTT_DOOR_OPEN_TOPIC
-            message = json.dumps({"IDENTITY_VERIFIED": "TRUE", "recognized_person": recognized_person_name})
-            try:
-                self.mqtt_client.publish(topic, message)
-                print(f"MQTT: Sent door open command for {recognized_person_name} to topic {topic}")
-            except Exception as e:
-                print(f"Error publishing MQTT door open command: {e}")
-        else:
-            print("MQTT client not connected, cannot send door open command.")
-
-    def _publish_face_status(self, face_name, location):
+    def _publish_face_status(self, face_name):
 
         if self.mqtt_client and self.mqtt_client.is_connected():
             message = json.dumps({
                 "person": face_name,
-                #"location": {"top": location[0], "right": location[1], "bottom": location[2], "left": location[3]},
                 "timestamp": datetime.now().isoformat()
             })
             try:
@@ -291,21 +277,31 @@ class FaceRecognitionSystem:
             return None
         # Encode as JPEG with quality 90 (can be adjusted)
         _, buffer = cv2.imencode('.jpg', image_np_array, [cv2.IMWRITE_JPEG_QUALITY, 90])
-        return base64.b64encode(buffer).decode('utf-8'), "hello"
+        return base64.b64encode(buffer).decode('utf-8')
 
-    def _publish_face_image(self, face_name, face_location_coords, base64_image_data, face_type): #ORIGINALLLLLLLLLLLLLLLLLLLLLLLLLLL
+    def _publish_face_image(self, face_name, base64_image_data, face_type): 
         """Publishes cropped face image data via MQTT."""
         if self.mqtt_client and self.mqtt_client.is_connected() and base64_image_data:
             topic = self.MQTT_DOOR_OPEN_TOPIC
-            message_2 = json.dumps({
-                "person": face_name,
-                "type": face_type, # "known" or "unknown"
-                "location": {"top": face_location_coords[0], "right": face_location_coords[1], "bottom": face_location_coords[2], "left": face_location_coords[3]},
-                "timestamp": datetime.now().isoformat(),
-                "image_data": base64_image_data
-            })
+            if face_type != "unknown":
+                message = json.dumps({
+                    
+                    "IDENTITY_VERIFIED": "TRUE",
+                    "timestamp": datetime.now().isoformat(),
+                    "image_data": str(base64_image_data),
+                    "recognized_person": face_name
+                })
+
+            if face_type == "unknown":
+                message = json.dumps({
+                    
+                    "IDENTITY_VERIFIED": "FALSE",
+                    "timestamp": datetime.now().isoformat(),
+                    "image_data": str(base64_image_data),
+                    "recognized_person": face_type
+                })
             try:
-                self.mqtt_client.publish(topic, message_2)
+                self.mqtt_client.publish(topic, message)
                 print(f"MQTT: Sent {face_type} face image for {face_name} to topic {self.MQTT_IMAGE_TOPIC}")
             except Exception as e:
                 print(f"Error publishing MQTT face image: {e}")
@@ -366,25 +362,31 @@ class FaceRecognitionSystem:
                     cropped_face = frame[max(0, top_orig):min(h, bottom_orig), max(0, left_orig):min(w, right_orig)]
 
                     # Send image via MQTT with cooldown
+                    current_time_str = datetime.now().strftime("%Y%m%d_%H%M%S")
                     if name != "Unknown":
                         # For known faces, track cooldown per individual name
                         if (name not in self.last_sent_known_face_image_time or
                                 current_processing_time - self.last_sent_known_face_image_time[name] > self.IMAGE_SEND_COOLDOWN):
                             base64_img = self._encode_image_to_base64(cropped_face)
-                            self._publish_face_image(name, (top_orig, right_orig, bottom_orig, left_orig), base64_img, "known")
+                            self._publish_face_image(name, base64_img, "known")
                             self.last_sent_known_face_image_time[name] = current_processing_time
+
+                            face_hash_part = hash(tuple(face_encoding.tobytes())) % 10000 if face_encoding is not None else np.random.randint(0, 10000)
+                            filename = f"{name}. {current_time_str}_{face_hash_part}.jpg"
+                            filepath = os.path.join(self.KNOWN_FACES_OUTPUT_DIR, filename)
+                            os.makedirs(self.KNOWN_FACES_OUTPUT_DIR, exist_ok=True)
+                            cv2.imwrite(filepath, cropped_face)
+                            self.send_face_image(cropped_face)
+                            
 
                     else: # name is "Unknown"
                         # For unknown faces, send any unknown face image if the general cooldown is met
                         if current_processing_time - self.last_sent_unknown_face_image_time > self.IMAGE_SEND_COOLDOWN:
                             base64_img = self._encode_image_to_base64(cropped_face)
-                            self._publish_face_image("Unknown", (top_orig, right_orig, bottom_orig, left_orig), base64_img, "unknown")
+                            self._publish_face_image("Unknown",base64_img, "unknown")
                             self.last_sent_unknown_face_image_time = current_processing_time
 
-                            # Capture unknown faces to file system as before (now from cropped_face)
-                            current_time_str = datetime.now().strftime("%Y%m%d_%H%M%S")
                             # Use a hash of the encoding to make filename more unique to the face,
-                            # or simply use a timestamp-based approach if unique filenames are desired for all captures.
                             # If face_encoding is None (no encoding generated), fallback to simple hash or ignore.
                             face_hash_part = hash(tuple(face_encoding.tobytes())) % 10000 if face_encoding is not None else np.random.randint(0, 10000)
                             filename = f"Unknown_{current_time_str}_{face_hash_part}.jpg"
@@ -463,7 +465,7 @@ class FaceRecognitionSystem:
                         self.last_known_face_exit_time = 0
 
                         if current_time - self.last_door_open_time > self.DOOR_OPEN_COOLDOWN:
-                            self._send_door_open_command(recognized_person_name=last_recognized_name)
+                            #self._send_door_open_command(recognized_person_name=last_recognized_name)
                             self.last_door_open_time = current_time
                     else: # No known face recognized in the current frame
                         if self.last_known_face_exit_time == 0:
@@ -474,7 +476,7 @@ class FaceRecognitionSystem:
 
                     # --- MQTT Status Update for all faces ---
                     for face_data in faces_info:
-                        self._publish_face_status(face_data["name"], face_data["location"])
+                        self._publish_face_status(face_data["name"])
 
                     # --- Display Processed Frame ---
                     cv2.imshow(self.OUTPUT_WINDOW_NAME, processed_frame)
