@@ -236,7 +236,7 @@ class FaceRecognitionSystem:
                     "timestamp": datetime.now().isoformat(),
                     "image_data": base64_image_data,
                     "recognized_person": face_type,
-                    "cosine_siimilarity": str(score)
+                    "cosine_similarity": str(score)
                 })
             try:
                 self.mqtt_client.publish(topic, message, qos=1)
@@ -249,76 +249,68 @@ class FaceRecognitionSystem:
         while not self.processing_stopped:
             try:
                 frame = self.frame_queue.get(timeout=0.1)
-
-                # Convert to RGB (InsightFace expects RGB)
                 rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-                # --- InsightFace: Get all faces (detection and embedding) ---
                 faces = self.app.get(rgb_frame)
-
                 faces_info = []
-                recognized_any_known_face_this_frame = False
-                last_recognized_name_this_frame = "Unknown"
 
                 current_processing_time = time.time()
 
+                can_send_unknown_faces = current_processing_time - self.last_sent_unknown_face_image_time > self.IMAGE_SEND_COOLDOWN #NEW
+                unknown_face_sent_this_batch = False #NEW
+                
                 for face in faces:
-                    #score = f"{face.det_score:.2f}"
                     x1, y1, x2, y2 = face.bbox.astype(int)
-
-
                     h, w, _ = frame.shape
                     padding = 100
                     x1 = max(0, x1- padding)
                     y1 = max(0, y1- padding)
                     x2 = min(w, x2+ padding)
                     y2 = min(h, y2+ padding)
-
-
                     cropped_face = frame[y1:y2, x1:x2] 
 
                     name = "Unknown"
                     face_embedding = face.embedding 
+                    best_similarity = 0.0 #NEW
 
                     # Perform comparison only if there are known faces and a valid embedding
                     if self.known_face_encodings.size > 0 and face_embedding is not None:
                         norm_face_embedding = face_embedding / np.linalg.norm(face_embedding)                        
                         norm_known_encodings = self.known_face_encodings / np.linalg.norm(self.known_face_encodings, axis=1, keepdims=True)
-
                         similarities = np.dot(norm_known_encodings, norm_face_embedding)
-
                         best_match_index = np.argmax(similarities) 
-                        similarity = f"{similarities[best_match_index]:.2f}"
-                        # Compare similarity to the threshold
-                        if similarities[best_match_index] > self.COSINE_SIMILARITY_THRESHOLD:
-                            name = self.known_faces_names[best_match_index]
-                            recognized_any_known_face_this_frame = True
-                            last_recognized_name_this_frame = name
+                        best_similarity = similarities[best_match_index]
+                        # similarity = f"{similarities[best_match_index]:.2f}" #NEW REMOVE
                         
-                        print(f"Face comparison result: {name}, Similarity: {similarity}")
-                    
-                    sim = f"{similarities[best_match_index]:.2f}"
-                    # Store info in (top, right, bottom, left) format for consistency with old code/drawing
+                        if best_similarity > self.COSINE_SIMILARITY_THRESHOLD:
+                            name = self.known_faces_names[best_match_index]
+                            # recognized_any_known_face_this_frame = True NEW
+                            # last_recognized_name_this_frame = name NEW
+
+                    sim_str = f"{best_similarity:.2f}"
+                    print(f"Face comparison result: {name}, Similarity: {sim_str}")
                     faces_info.append({"name": name, "location": (y1, x2, y2, x1)})
 
                     # Send image via MQTT with cooldown
                     if name != "Unknown":
                         # For known faces, track cooldown per individual name
                         if (name not in self.last_sent_known_face_image_time or 
-                                current_processing_time - self.last_sent_known_face_image_time[name] > self.IMAGE_SEND_COOLDOWN):
+                                current_processing_time - self.last_sent_known_face_image_time.get(name, 0) > self.IMAGE_SEND_COOLDOWN):
                             base64_img = self._encode_image_to_base64(cropped_face)
-                            self._publish_face_image(name, base64_img, "known", sim)
-
+                            self._publish_face_image(name, base64_img, "known", sim_str)
                             self.last_sent_known_face_image_time[name] = current_processing_time
                     else:
                         # For unknown faces, send any unknown face image if the general cooldown is met
-                        if current_processing_time - self.last_sent_unknown_face_image_time > self.IMAGE_SEND_COOLDOWN:
+                        if can_send_unknown_faces:
+                        #if current_processing_time - self.last_sent_unknown_face_image_time > self.IMAGE_SEND_COOLDOWN: NEW REMOVE
                             base64_img = self._encode_image_to_base64(cropped_face)
-                            self._publish_face_image("Unknown",base64_img, "unknown", sim)
-                            self.last_sent_unknown_face_image_time = current_processing_time
-
+                            self._publish_face_image("Unknown",base64_img, "unknown", sim_str)
+                            unknown_face_sent_this_batch = True
+                            # self.last_sent_unknown_face_image_time = current_processing_time NEW
+                if unknown_face_sent_this_batch:
+                    self.last_sent_unknown_face_image_time = current_processing_time
+                    
                 try:
-                    self.results_queue.put_nowait((faces_info, recognized_any_known_face_this_frame, last_recognized_name_this_frame, frame))
+                    self.results_queue.put_nowait((faces_info, frame)) # NEW REMOVED recognized_any_known_face_this_frame, last_recognized_name_this_frame,
                 except queue.Full:
                     pass
             except queue.Empty:
@@ -350,7 +342,8 @@ class FaceRecognitionSystem:
                 frame = self.webcam_stream.read()
                 if frame is None or frame.size == 0:
                     print("Received empty/NONE frame from webcam. Exiting main loop.")
-                    break
+                    time.sleep(1)
+                    continue
 
                 try:
                     self.frame_queue.put_nowait(frame)
