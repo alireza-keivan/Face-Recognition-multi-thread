@@ -1,6 +1,7 @@
 # thread2.py
 from threading import Thread
 import time
+from time import gmtime, strftime
 import cv2
 import json
 import numpy as np
@@ -121,9 +122,6 @@ class FaceRecognitionSystem:
         self._load_known_faces()
         self._init_mqtt_client()
         self._init_webcam_stream()
-        #self._init_opencv_window()
-        #self._create_output_directories()
-
         # --- Queues for Thread Communication ---
         self.frame_queue = queue.Queue(maxsize=2)
         self.results_queue = queue.Queue(maxsize=2)
@@ -176,15 +174,28 @@ class FaceRecognitionSystem:
         if self.MQTT_USERNAME and self.MQTT_PASSWORD:
             self.mqtt_client.username_pw_set(username=self.MQTT_USERNAME, password=self.MQTT_PASSWORD)
 
+        # --- DEBUGGING FIX ---
+        # Define and assign callbacks to get visibility into the connection status.
+        def on_connect(client, userdata, flags, rc):
+            if rc == 0:
+                print("MQTT: Successfully connected to broker.")
+            else:
+                print(f"MQTT: Failed to connect, return code {rc}\n")
+
+        def on_disconnect(client, userdata, rc):
+            print(f"MQTT: Disconnected from broker with result code {rc}.")
 
         def on_publish(client, userdata, mid):
             print(f"MQTT: Message with ID {mid} published.")
 
-        self.mqtt_client.on_publish = on_publish # Assign the on_publish callback
+        self.mqtt_client.on_connect = on_connect
+        self.mqtt_client.on_disconnect = on_disconnect
+        self.mqtt_client.on_publish = on_publish
+        # --- END FIX ---
 
         try:
             self.mqtt_client.connect(self.MQTT_BROKER_ADDRESS, self.MQTT_BROKER_PORT, 60)
-            self.mqtt_client.loop_start() # Start background thread for MQTT
+            self.mqtt_client.loop_start()
         except Exception as e:
             print(f"Could not connect to MQTT broker: {e}. MQTT functionality will be disabled.")
             self.mqtt_client = None
@@ -218,31 +229,30 @@ class FaceRecognitionSystem:
         if self.mqtt_client and self.mqtt_client.is_connected() and base64_image_data:
             # Ensure all face_location_coords are standard Python integers
             topic = self.MQTT_FACE_TOPIC
-            if face_type != "unknown":
-                
-                message = json.dumps({
-
+            if face_type != "unknown":  
+                payload = {
                     "IDENTITY_VERIFIED": "TRUE",
                     "timestamp": datetime.now().isoformat(),
                     "image_data": base64_image_data,
                     "recognized_person": face_name,
                     "cosine_similarity": str(score)
-                })
+                }
 
-            if face_type == "unknown":
-                message = json.dumps({
-
+            elif face_type == "unknown":
+                payload = {
                     "IDENTITY_VERIFIED": "FALSE",
                     "timestamp": datetime.now().isoformat(),
                     "image_data": base64_image_data,
                     "recognized_person": face_type,
                     "cosine_similarity": str(score)
-                })
-            try:
-                self.mqtt_client.publish(topic, message, qos=1)
-                print(f"MQTT: Sent {face_type} face image for {face_name} to topic {self.MQTT_FACE_TOPIC}")
-            except Exception as e:
-                print(f"Error publishing MQTT face image: {e}")
+                }
+            if topic and payload:
+                try:
+                    message = json.dumps(payload)
+                    self.mqtt_client.publish(topic, message, qos=1)
+                    print(f"MQTT: Sent {face_type} face image for {face_name} to topic {topic}")
+                except Exception as e:
+                    print(f"Error publishing MQTT face image: {e}")
 
     def _process_frame_in_thread(self):
         print("Face processing thread started.")
@@ -283,11 +293,10 @@ class FaceRecognitionSystem:
                         
                         if best_similarity > self.COSINE_SIMILARITY_THRESHOLD:
                             name = self.known_faces_names[best_match_index]
-                            # recognized_any_known_face_this_frame = True NEW
-                            # last_recognized_name_this_frame = name NEW
+
 
                     sim_str = f"{best_similarity:.2f}"
-                    print(f"Face comparison result: {name}, Similarity: {sim_str}")
+                    print(f"Face comparison result: {name}, Similarity: {sim_str}", {strftime("%H:%M:%S", gmtime())})
                     faces_info.append({"name": name, "location": (y1, x2, y2, x1)})
 
                     # Send image via MQTT with cooldown
