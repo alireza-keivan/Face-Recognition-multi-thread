@@ -1,25 +1,23 @@
 # dir.py
 import os
-import face_recognition
 import numpy as np
 import pickle
+import cv2 # Required for cv2.imread and cv2.cvtColor
+
+# No longer need face_recognition here
 
 # Initialize lists for known faces (these will be populated by images_folder)
-# These remain global to be accessible after the function returns them.
 known_face_encodings = []
 known_faces_names = []
 
-# KNOWN_FACES_DIR will now be passed from FaceRecognitionSystem based on config.
-# ENCODINGS_FILE will also be passed as an argument to images_folder.
-
-def images_folder(directory, encodings_file_path):
-    global known_face_encodings, known_faces_names # Ensure we modify the global lists
+# Modify the function signature to accept the InsightFace app
+def images_folder(directory, encodings_file_path, insightface_app):
+    global known_face_encodings, known_faces_names
 
     print(f"--- Loading Known Faces ---")
     print(f"Checking for existing encodings file: {encodings_file_path}...")
 
-    # Attempt to load pre-encoded faces
-    loaded_successfully = False # Flag to track if loading was successful
+    loaded_successfully = False
     if os.path.exists(encodings_file_path):
         try:
             with open(encodings_file_path, 'rb') as f:
@@ -27,38 +25,50 @@ def images_folder(directory, encodings_file_path):
                 known_face_encodings = loaded_data.get('encodings', [])
                 known_faces_names = loaded_data.get('names', [])
             print(f"Successfully loaded {len(known_face_encodings)} pre-encoded faces from {encodings_file_path}.")
-            loaded_successfully = True # Set flag to True on success
+            loaded_successfully = True
         except Exception as e:
             print(f"Error loading encodings from {encodings_file_path}: {e}")
             print("Proceeding to re-encode faces from directory.")
-            # Fall through to re-encoding logic
-    else:
-        print(f"Encodings file '{encodings_file_path}' not found. Will encode faces from directory.")
-        # This branch also falls through to re-encoding
 
     # Only re-encode if loading failed or file didn't exist, OR if no encodings were loaded
-    # This ensures that even if a valid but empty PKL file exists, it will re-encode.
     if not loaded_successfully or not known_face_encodings:
         temp_encodings = []
         temp_names = []
 
         print(f"Encoding faces from directory: {directory}...")
-        # Ensure the directory exists before listing
         if not os.path.exists(directory):
             print(f"Error: Known faces directory '{directory}' not found. No faces will be encoded.")
-            return [], [] # Return empty if directory doesn't exist
+            return [], []
 
         for filename in os.listdir(directory):
             if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
                 image_path = os.path.join(directory, filename)
                 try:
-                    image = face_recognition.load_image_file(image_path)
-                    encodings = face_recognition.face_encodings(image)
-                    if encodings:
-                        temp_encodings.append(encodings[0])
+                    image = cv2.imread(image_path)
+                    if image is None:
+                        print(f"Warning: Could not load image {filename}. Skipping.")
+                        continue
+
+                    # Convert to RGB (InsightFace expects RGB)
+                    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+                    # --- InsightFace: Get face embeddings ---
+                    # app.get() returns a list of Face objects.
+                    # We expect one face per known image for encoding.
+                    faces = insightface_app.get(image_rgb)
+
+                    if len(faces) == 1:
+                        face_embedding = faces[0].embedding # Get the ArcFace embedding
+                        temp_encodings.append(face_embedding)
                         name = os.path.splitext(filename)[0]
                         temp_names.append(name)
                         print(f"Successfully encoded face from: {name}. Total encoded so far: {len(temp_encodings)}")
+                    elif len(faces) > 1:
+                        print(f"Warning: Multiple faces found in image '{filename}'. Encoding only the first one.")
+                        face_embedding = faces[0].embedding
+                        temp_encodings.append(face_embedding)
+                        name = os.path.splitext(filename)[0]
+                        temp_names.append(name)
                     else:
                         print(f"Warning: No face found in image '{filename}' in '{directory}'. Please ensure the image clearly shows a single face.")
                 except Exception as img_e:
@@ -66,17 +76,14 @@ def images_folder(directory, encodings_file_path):
             else:
                 print(f"Skipping non-image file in '{directory}': {filename}")
 
-
-        # Update global lists after processing all images
         known_face_encodings = temp_encodings
         known_faces_names = temp_names
 
         print(f"Finished encoding process. Total faces encoded for saving: {len(known_face_encodings)}")
 
         # Save the newly generated encodings
-        if known_face_encodings: # Only save if some faces were actually encoded
+        if known_face_encodings:
             try:
-                # Ensure the directory for the encodings file exists
                 os.makedirs(os.path.dirname(encodings_file_path), exist_ok=True)
                 with open(encodings_file_path, 'wb') as f:
                     pickle.dump({'encodings': known_face_encodings, 'names': known_faces_names}, f)
