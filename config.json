@@ -1,7 +1,7 @@
 {
     "camera_settings":{
-        "url": "rtsp://192.168.49.24:554/ch01.264",
-        "url2": "rtsp://admin:ms123456@192.168.48.67:554/main",
+        "url2": "rtsp://192.168.49.24:554/ch01.264",
+        "url": "rtsp://admin:ms123456@192.168.48.67:554/main",
         "stream_id": "0",
         "fps_limit": 5.0,
         "OUTPUT_WINDOW_NAME" : "Face Recognition Stream",
@@ -26,20 +26,20 @@
     "mqtt_settings":{
         "MQTT_BROKER_ADDRESS" : "192.168.45.115",
         "MQTT_BROKER_PORT" : 1883,
-        "MQTT_CLIENT_ID" : "h3s4if5snwex1s48248y",
-        "MQTT_USERNAME" : "whci9cx9ifv0xbayda45",
-        "MQTT_PASSWORD" : "qmgfiay3oilhzxki868i",
+        "MQTT_CLIENT_ID" : "qaxmkz3boy2c8k19ko3l",
+        "MQTT_USERNAME" : "vdpltlfzp8kj1eqxux6g",
+        "MQTT_PASSWORD" : "vxm8d49txxpjfci9k529",
         "MQTT_FACE_TOPIC": "v1/devices/me/telemetry"
     },
 
     "optimization_settings": {
-        "detection_interval_seconds": 10.0,
+        "detection_interval_seconds": 5.0,
         "tracker_type": "KCF"
     },
     "operation_region":{
-        "x1":1,
-        "x2":2,
-        "y1":3,
-        "y2":4
+        "x1":600,
+        "x2":2000,
+        "y1":10,
+        "y2":2500
     }
 }
