@@ -1,6 +1,6 @@
 import json
 import sys
-from th import FaceRecognitionSystem
+from thread import FaceRecognitionSystem
 import logging
 
 
