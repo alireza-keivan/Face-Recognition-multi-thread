@@ -4,11 +4,11 @@
 
 This project is a professional-grade, real-time face recognition system designed for security and access control applications. It leverages the power of OpenCV and the lightweight, highly accurate InsightFace library to perform fast face detection and recognition from a live video stream.
 
-The system is built to be modular and efficient, using multi-threading to handle video capture and face processing independently. It can be easily configured to work with various camera sources, including local webcams and RTSP streams. Recognized faces are published to an MQTT broker, enabling seamless integration with home automation or IoT security **platforms**.
-Key Features
+The system is built to be modular and efficient, using multi-threading to handle video capture and face processing independently. It can be easily configured to work with various camera sources, including local webcams and RTSP streams. Recognized faces are published to an MQTT broker, enabling seamless integration with home automation or IoT security platforms.
+
 ---
 ## Features
-- **High-Performance Recognition: Utilizes the InsightFace model for robust and accurate facial embeddings.
+- High-Performance Recognition: Utilizes the InsightFace model for robust and accurate facial embeddings.
 
 - **Efficient Processing: Multi-threaded architecture separates video capture from computationally intensive face analysis to maximize FPS.
 
