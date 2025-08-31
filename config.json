@@ -1,7 +1,6 @@
 {
     "camera_settings": {
-        "url2": "rtsp://192.168.49.24:554/ch01.264",
-        "url": "rtsp://admin:ms123456@192.168.48.67:554/main",
+        "url": "",
         "stream_id": "0",
         "fps_limit": 5.0,
         "OUTPUT_WINDOW_NAME": "Face Recognition Stream",
@@ -20,16 +19,16 @@
         "detection_height": 320
     },
     "directories": {
-        "KNOWN_FACES_DIR": "/home/alireza/Documents/insightface/captured_known_faces",
-        "ENCODINGS_FILE": "/home/alireza/Documents/insightface/known_faces_data.pkl"
+        "KNOWN_FACES_DIR": "/home/.../captured_known_faces",
+        "ENCODINGS_FILE": "/home/.../known_faces_data.pkl"
     },
     "mqtt_settings": {
-        "MQTT_BROKER_ADDRESS": "192.168.45.115",
+        "MQTT_BROKER_ADDRESS": "",
         "MQTT_BROKER_PORT": 1883,
-        "MQTT_CLIENT_ID": "3tj4xmyidktoad89btyg",
-        "MQTT_USERNAME": "ezqphe5nso3autvelpb0",
-        "MQTT_PASSWORD": "lt0ighmu6oh8h8rj20t9",
-        "MQTT_FACE_TOPIC": "v1/devices/me/telemetry"
+        "MQTT_CLIENT_ID": "",
+        "MQTT_USERNAME": "",
+        "MQTT_PASSWORD": "",
+        "MQTT_FACE_TOPIC": ""
     },
     "optimization_settings": {
         "detection_interval_seconds": 5.0,
@@ -40,10 +39,5 @@
         "x2": 2000,
         "y1": 10,
         "y2": 2500
-    },
-    "openvino_settings": {
-    "detection_model_path": "/home/alireza/Documents/insightface/models/ir/detection/ultra-lightweight-face-detection-rfb-320.xml",
-    "recognition_model_path": "/home/alireza/Documents/insightface/models/ir/recognition/arcfaceresnet100-8.xml",
-    "device": "CPU"
-}
+    }
 }
