@@ -16,4 +16,10 @@ The system is built to be modular and efficient, using multi-threading to handle
 
 - Real-time Tracking: Employs a KCF tracker to follow detected faces between full detection scans, ensuring smooth and consistent tracking while reducing CPU load.
 
-- MQTT Integration: Publishes recognition events, including face images and metadata, to an MQTT broker for real-time notifications and actions (e.g., opening a door, sending an alert).  
+- MQTT Integration: Publishes recognition events, including face images and metadata, to an MQTT broker for real-time notifications and actions (e.g., opening a door, sending an alert).
+
+---
+# Getting Started
+1. Configuration
+
+- First, you'll need to update the config.json file with your specific settings. This is where you configure camera streams, MQTT credentials, and recognition parameters.
