@@ -1,6 +1,9 @@
 # My **Headless Face Recognition** project with  multiple use cases!
 Hey, so I built this face recognition system using InsightFace for spotting and identifying faces, OpenCV for handling video, and MQTT to send data to a server. It’s pretty dope for stuff like unlocking doors, keeping an eye on security, or even just playing around with some cool computer vision tech. The whole thing runs in real-time, processes video streams, and shoots results to an MQTT broker. I’ve made it super tweakable with a config.json file and kept it snappy with some threading tricks. This README’s gonna walk you through it like a tutorial, but it’s also got enough meat to impress the academic crowd.
-
+[https://www.google.com/url?sa=i&url=https%3A%2F%2Finsightface.ai%2F&psig=AOvVaw07lUIxJ8Loa_0lUBjQ0vSK&ust=1757233294874000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJiP7qXaw48DFQAAAAAdAAAAABAE]
+[<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/894adca7-4e31-4aa8-aae3-e0b984d1a33f" />
+]
+[https://kankashco.com/wp-content/uploads/2023/09/Fartak-Logo-1.png]
 ---
 ### What’s This Thing Do?
 
