@@ -2,11 +2,22 @@
 Hey, so I built this face recognition system using InsightFace for spotting and identifying faces, OpenCV for handling video, and MQTT to send data to a server. It’s pretty dope for stuff like unlocking doors, keeping an eye on security, or even just playing around with some cool computer vision tech. The whole thing runs in real-time, processes video streams, and shoots results to an MQTT broker. I’ve made it super tweakable with a config.json file and kept it snappy with some threading tricks. This README’s gonna walk you through it like a tutorial, but it’s also got enough meat to impress the academic crowd.
 
 ---
-<img src="[https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/logos/Fartak.png]" alt="Description" width="400">
+<table>
+  <tr>
+    <td>
+      <img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/logos/Fartak.png" alt="Description" width="400">
+    </td>
+    <td>
+      <img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/logos/insightface.jpg" alt="Description" width="400">
+    </td>
+    <td>
+      <img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/logos/milesight.jpg" alt="Description" width="400">
+    </td>
+  </tr>
+</table>
 
-![Alt Text](<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/894adca7-4e31-4aa8-aae3-e0b984d1a33f" />)
 
-<img src="https://kankashco.com/wp-content/uploads/2023/09/Fartak-Logo-1.png" alt="Description" width="50%">
+
 
 ---
 
@@ -161,6 +172,26 @@ Project Files
 
 * face_recognition.log: Logs everything for debugging.
 ---
+
+## Samples of the output in our netlan pannel
+
+<table>
+  <tr>
+    <td>
+      <img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/samples/Unknowns.png" width="600">
+    </td>
+    <td>
+      <img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/samples/mixed.png" width="600">
+    </td>
+  </tr>
+</table>
+
+
+
+
+---
+
+
 ## What You Need to Run It
 * Python 3.8+: Gotta have it.
 #### Libraries:
@@ -202,7 +233,11 @@ cd face_recognition
 * Face data goes to your MQTT topic.
 * Logs in face_recognition.log show errors or performance.
 
+Shoutouts
 
+Big props to InsightFace and OpenCV for making this work. Got ideas to improve it? Hit me up!
+
+Alireza Keivan| [alirezakeyvan06@gmail.com]
 
 
   
