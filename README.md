@@ -233,7 +233,9 @@ cd face_recognition
 * Face data goes to your MQTT topic.
 * Logs in face_recognition.log show errors or performance.
 
-Shoutouts
+---
+
+#### Shoutouts
 
 Big props to InsightFace and OpenCV for making this work. Got ideas to improve it? Hit me up!
 
