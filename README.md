@@ -200,7 +200,8 @@ Project Files
 * paho-mqtt: For talking to the MQTT broker.
 * pickle: For saving encodings.
 ## Hardware:
-A camera (RTSP or webcam) and maybe an MQTT broker.
+* A camera (RTSP or webcam) and maybe an MQTT broker.
+
 ---
 Install the libraries:
 ``` bash
