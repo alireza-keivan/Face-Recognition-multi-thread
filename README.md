@@ -54,13 +54,13 @@ I went for a modular setup with some threading to keep things smooth. Here’s t
 
 #### Face Tracking
 
-* Tool: OpenCV’s KCF tracker to keep tabs on faces between detections.
+* **Tool**: OpenCV’s KCF tracker to keep tabs on faces between detections.
 
-* How It Works: Once a face is spotted, I set up a tracker to follow it until the next full detection. Saves a ton of processing power.
+* **How It Works:** Once a face is spotted, I set up a tracker to follow it until the next full detection. Saves a ton of processing power.
 
 #### Saving Data
 
-* Encodings: Known face embeddings get saved in a known_faces_data.pkl file with pickle. No need to re-encode every time.
+*** Encodings:** Known face embeddings get saved in a known_faces_data.pkl file with pickle. No need to re-encode every time.
 
 * Images: Known face pics live in KNOWN_FACES_DIR. If there’s no encoding file, I process these images at startup.
 
@@ -129,7 +129,7 @@ I went for a modular setup with some threading to keep things smooth. Here’s t
 }
 ```
 ### Key Settings
-camera_settings:
+#### camera_settings:
 
 * url: Your camera’s RTSP link or index (like 0 for a webcam).
 * fps_limit: Caps how many frames we process per second (e.g., 5.0).
@@ -156,7 +156,7 @@ camera_settings:
 
 * Update MQTT creds and ROI coords to fit your setup.
 ---
-Project Files
+#### Project Files
 
 * config.json: All the settings live here.
 
@@ -185,12 +185,7 @@ Project Files
     </td>
   </tr>
 </table>
-
-
-
-
 ---
-
 
 ## What You Need to Run It
 * Python 3.8+: Gotta have it.
@@ -213,24 +208,24 @@ pip install insightface
 ```
 #### How to Get It Running
 
-1. Grab the Code:
+1. **Grab the Code:**
 ``` bash
 git clone <https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/README.md>
 cd face_recognition
 ```
-2. Set Up Known Faces:
+2. **Set Up Known Faces**:
 * Drop .png, .jpg, or .jpeg images of known people into KNOWN_FACES_DIR.
 * Make sure each image has one face to avoid confusion.
-3. Tweak config.json:
+3. **Tweak config.json:**
 * Update the camera URL, MQTT settings, and ROI coords for your setup.
-4. Fire It Up:
+4. **Fire It Up:**
 ``` bash
   python recognizer.py
   ```
 * It’ll load known faces, start the camera, connect to MQTT, and process video.
 * Check face_recognition.log for what’s happening.
 
-5. Watch the Output:
+5. **Watch the Output:**
 * Face data goes to your MQTT topic.
 * Logs in face_recognition.log show errors or performance.
 
