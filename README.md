@@ -1,8 +1,11 @@
+# My **Face Recognition** project for multiple use cases!
 Hey, so I built this face recognition system using InsightFace for spotting and identifying faces, OpenCV for handling video, and MQTT to send data to a server. It’s pretty dope for stuff like unlocking doors, keeping an eye on security, or even just playing around with some cool computer vision tech. The whole thing runs in real-time, processes video streams, and shoots results to an MQTT broker. I’ve made it super tweakable with a config.json file and kept it snappy with some threading tricks. This README’s gonna walk you through it like a tutorial, but it’s also got enough meat to impress the academic crowd.
 
+---
 ### What’s This Thing Do?
 
 Basically, it grabs video from a camera (like an RTSP stream or a webcam), spots faces with InsightFace’s deep learning magic, and figures out if they’re someone we know or not. Then it sends the results—like who’s in the frame, their face coordinates, and even a base64-encoded image—over MQTT. It’s got some smart optimizations, like scaling down frames and only doing full detection every few seconds, so it doesn’t hog your CPU. Plus, it’s tough—handles errors like a champ and logs everything for debugging.
+
 ---
 
 ## Where Can You Use It?
@@ -26,7 +29,7 @@ I went for a modular setup with some threading to keep things smooth. Here’s t
 
 #### Face Detection and Recognition
 
-* Tool: InsightFace’s buffalo_l model for detecting faces and making 512-dimensional embeddings (fancy face fingerprints, basically).
+* Tool: [InsightFace’s](https://github.com/deepinsight/insightface) [buffalo_l model](https://github.com/deepinsight/insightface/tree/master/model_zoo) for detecting faces and making 512-dimensional embeddings (fancy face fingerprints, basically).
 * How It Works: Frames get converted to RGB, scaled down, and fed to InsightFace. It spits out embeddings, which I compare to known faces using cosine similarity.
 * Trick: I use a PROCESS_FRAME_SCALE to shrink frames and only do full detection every few seconds (detection_interval_seconds) to save juice.
 
@@ -172,7 +175,7 @@ pip install insightface
 
 1. Grab the Code:
 ``` bash
-git clone <your_repo_url>
+git clone <https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/README.md>
 cd face_recognition
 ```
 2. Set Up Known Faces:
