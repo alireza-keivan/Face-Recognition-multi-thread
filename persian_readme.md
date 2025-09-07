@@ -76,13 +76,9 @@ Git یک ابزار برای مدیریت نسخه‌ها و دریافت کد �
 اجرای دستور کلون: دستور زیر را با آدرس مخزن خود جایگزین کرده و اجرا کنید:
    ``` Bash
 
-git clone <آدرس مخزن پروژه شما>
+git clone https://github.com/alireza-keivan/Face-Recognition-multi-thread/tree/alireza-keivan
 ```
-برای مثال:
-``` Bash
 
-    git clone https://github.com/your-username/your-project-name.git
-```
 پس از اجرای این دستور، تمامی فایل‌های پروژه در یک پوشه جدید با نام پروژه در مسیر فعلی شما دانلود خواهند شد.
 
 ۱.۰.۳. ورود به پوشه پروژه
