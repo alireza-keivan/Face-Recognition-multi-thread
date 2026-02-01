@@ -227,54 +227,15 @@ psql -h localhost -U face_user -d face_recognition_db
 
 اگر با موفقیت وارد شدید، پیکربندی صحیح است. با `\q` خارج شوید.
 
----
+---Python 3
 
-## ۴. نصب Python و محیط مجازی
 
-### ۴.۱ نصب Python 3
-
-#### گام ۱: بررسی نسخه Python
-```bash
-python3 --version
-```
-
-باید Python 3.8 یا بالاتر نمایش داده شود.
-
-#### گام ۲: نصب pip و ابزارهای توسعه
-```bash
-sudo apt install python3-pip python3-venv python3-dev -y
-```
-
-#### گام ۳: نصب بسته‌های سیستمی مورد نیاز
-```bash
-sudo apt install build-essential libpq-dev -y
-```
-
-**توضیح**: 
-- `build-essential`: برای کامپایل بسته‌های Python
-- `libpq-dev`: برای اتصال به PostgreSQL
-
-### ۴.۲ ایجاد محیط مجازی Python
-
-#### گام ۱: رفتن به پوشه پروژه
+#### گام 1: رفتن به پوشه پروژه
 ```bash
 cd /home/face/Face-Recognition-multi-thread
 ```
 
-اگر پوشه وجود ندارد، ایجاد کنید:
-```bash
-mkdir -p /home/face/Face-Recognition-multi-thread
-cd /home/face/Face-Recognition-multi-thread
-```
-
-#### گام ۲: ایجاد محیط مجازی
-```bash
-python3 -m venv .
-```
-
-این دستور یک محیط مجازی در پوشه فعلی ایجاد می‌کند.
-
-#### گام ۳: فعال‌سازی محیط مجازی
+#### گام 2: فعال‌سازی محیط مجازی
 ```bash
 source bin/activate
 ```
@@ -292,31 +253,6 @@ pip install --upgrade pip
 
 ## ۵. نصب کتابخانه‌های مورد نیاز
 
-### ۵.۱ ایجاد فایل requirements.txt
-
-#### گام ۱: ایجاد پوشه webapp
-```bash
-mkdir -p webapp
-cd webapp
-```
-
-#### گام ۲: ایجاد فایل requirements.txt
-```bash
-nano requirements.txt
-```
-
-محتوای زیر را در آن کپی کنید:
-```
-Flask==3.0.0
-Flask-SQLAlchemy==3.1.1
-Flask-Login==0.6.3
-psycopg2-binary==2.9.9
-gunicorn==21.2.0
-Pillow==10.1.0
-numpy==1.26.2
-jdatetime==5.0.0
-```
-
 **توضیح کتابخانه‌ها**:
 - **Flask**: فریمورک اصلی وب
 - **Flask-SQLAlchemy**: ORM برای کار با پایگاه داده
@@ -327,14 +263,13 @@ jdatetime==5.0.0
 - **numpy**: محاسبات عددی
 - **jdatetime**: تاریخ شمسی (جلالی)
 
-ذخیره کنید (Ctrl+O, Enter, Ctrl+X).
-
 ### ۵.۲ نصب کتابخانه‌ها
 
 ```bash
 cd /home/face/Face-Recognition-multi-thread
 source bin/activate
 pip install -r webapp/requirements.txt
+pip install -r requirements.txt
 ```
 
 این فرآیند ممکن است چند دقیقه طول بکشد.
@@ -417,7 +352,7 @@ http://[IP_ADDRESS]:5000/login
 
 #### گام ۲: وارد کردن اطلاعات
 - **نام کاربری**: admin
-- **رمز عبور**: admin123
+- **رمز عبور**:****
 
 #### گام ۳: تغییر رمز عبور (بسیار مهم!)
 بعد از ورود، حتماً رمز عبور را تغییر دهید.
