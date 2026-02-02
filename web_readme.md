@@ -128,11 +128,12 @@ sudo -u postgres psql
 ```
 
 #### گام ۲: ایجاد کاربر برای برنامه
+**نکته امنیتی مهم**: در محیط production حتماً از رمز عبور قوی استفاده کنید
 ```sql
 CREATE USER face_user WITH PASSWORD '123456';
 ```
 
-**نکته امنیتی مهم**: در محیط production حتماً از رمز عبور قوی استفاده کنید.
+.
 
 #### گام ۳: ایجاد پایگاه داده
 ```sql
@@ -352,7 +353,7 @@ http://[IP_ADDRESS]:5000/login
 
 #### گام ۲: وارد کردن اطلاعات
 - **نام کاربری**: admin
-- **رمز عبور**:****
+- **رمز عبور**:******
 
 #### گام ۳: تغییر رمز عبور (بسیار مهم!)
 بعد از ورود، حتماً رمز عبور را تغییر دهید.
@@ -386,12 +387,12 @@ session = db_manager.get_session()
 
 # Create new user
 new_user = User(
-    username='username_here',
-    email='email@example.com',
+    username='username_here', #تغییر دهید
+    email='email@example.com', # تغییر دهید
     is_admin=False,  # True for admin, False for regular user
     is_active=True
 )
-new_user.set_password('password_here')
+new_user.set_password('password_here') # تغییر دهید
 
 session.add(new_user)
 session.commit()
