@@ -529,7 +529,7 @@ pip install --upgrade pip
 ---
 
 ## ۵. نصب کتابخانه‌های مورد نیاز
-
+curl http://localhost
 **توضیح کتابخانه‌ها**:
 - **Flask**: فریمورک اصلی وب
 - **Flask-SQLAlchemy**: ORM برای کار با پایگاه داده
@@ -710,36 +710,131 @@ sudo nano /etc/systemd/system/face-webapp.service
 محتوا:
 ```ini
 [Unit]
-Description=Face Recognition Web Application
+Description=Face Recognition Web Admin
 After=network.target postgresql.service
-Wants=postgresql.service
 
 [Service]
-Type=notify
 User=face
 Group=face
 WorkingDirectory=/home/face/Face-Recognition-multi-thread/webapp
-Environment="PATH=/home/face/Face-Recognition-multi-thread/bin"
-ExecStart=/home/face/Face-Recognition-multi-thread/bin/gunicorn \
-    --bind 0.0.0.0:5000 \
-    --workers 4 \
-    --threads 2 \
-    --timeout 120 \
-    --access-logfile /home/face/Face-Recognition-multi-thread/logs/webapp-access.log \
-    --error-logfile /home/face/Face-Recognition-multi-thread/logs/webapp-error.log \
-    wsgi:app
-
-# Restart policy
+Environment="PATH=/home/face/Face-Recognition-multi-thread/bin:/usr/bin"
+Environment="VIRTUAL_ENV=/home/face/Face-Recognition-multi-thread"
+ExecStart=/home/face/Face-Recognition-multi-thread/bin/python /home/face/Face-Recognition-multi-thread/bin/gunicorn --workers 3 --bind 127.0.0.1:5001 app:app
 Restart=always
-RestartSec=10
-
-# Security
-NoNewPrivileges=true
-PrivateTmp=true
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
 ```
+
+
+```bash
+sudo nano /etc/systemd/system/face-recognition.service
+```
+
+محتوا:
+```ini
+[Unit]
+Description=Face Recognition Application Service
+After=network.target
+
+[Service]
+# User and Group to run the service as
+Type=simple
+User=face
+Group=face
+
+# The directory where your script is located
+WorkingDirectory=/home/face/Face-Recognition-multi-thread # این آدرس منطبق با آدرس خودتان اصلاح شود
+
+# The command to start your application
+# Use the FULL PATH to your virtual environment's python and your script
+ExecStart=/home/face/Face-Recognition-multi-thread/exit.bash
+# Restart the service if it fails
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+```
+دستور زیر را اجرا کنید:
+```bash
+sudo apt update
+sudo apt install -y nginx
+sudo nano /usr/lib/systemd/system/nginx.service
+```
+نصب nginx را تایید کنید:
+```bash
+systemctl list-unit-files | grep nginx
+```
+خروجی مورد نظر:
+```bash
+nginx.service    enabled
+```
+دستور زیر را اجرا و محتوای سرور زیر را به فایل اضافه کنید:
+```bash
+sudo nano /etc/nginx/sites-available/face-webapp
+```
+```bash
+server {
+    listen 80;
+    server_name 192.168.45.235;
+
+    location / {
+        proxy_pass http://127.0.0.1:5001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 60s;
+        proxy_read_timeout 60s;
+   
+    }
+    location /static {
+        alias /home/face/Face-Recognition-multi-thread/webapp/static;
+        expires 1d;
+    }
+
+    location /saved_faces {
+        alias /home/face/Face-Recognition-multi-thread/saved_faces;
+    }
+}
+```
+لینک سیمبولیک را با اجرای دستور زیر بسازید:
+```bash
+sudo ln -s /etc/nginx/sites-available/face-webapp \
+           /etc/nginx/sites-enabled/face-webapp
+```
+تایید ساخت لینک سیمبولیک و خروجی مورد نظر:
+
+```bash
+sudo nginx -t
+```
+
+```bash
+syntax is ok
+test is successful
+```
+
+راه اندازی سرویس nginx:
+```bash
+sudo systemctl restart nginx
+```
+
+```bash
+systemctl status nginx
+```
+خروجی مورد نظر:
+```bash
+Active: active (running)
+```
+شروع nginx از بوت:
+```bash
+sudo systemctl enable nginx
+```
+
+
+
 
 **نکته مهم**: اگر کاربر شما `face` نیست، `User` و `Group` را با نام کاربری خود جایگزین کنید.
 
