@@ -293,5 +293,3 @@ Special thanks to the open-source communities behind:
 # License
 
 This project is intended for educational, research, and commercial adaptation purposes under the terms of the repository license.
-
----
