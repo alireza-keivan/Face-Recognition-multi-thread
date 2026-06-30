@@ -1,12 +1,11 @@
-# **Headless Face Recognition** with  multiple use cases!
-So I built this face recognition system using InsightFace for spotting and identifying faces, OpenCV for handling video, and MQTT to send data to a server. It’s pretty dope for stuff like unlocking doors, keeping an eye on security, or even just playing around with some cool computer vision tech. The whole thing runs in real-time, processes video streams, and shoots results to an MQTT broker. I’ve made it super tweakable with a config.json file and kept it snappy with some threading tricks. This README’s gonna walk you through it like a tutorial, but it’s also got enough meat to impress the academic crowd.
+# Real-Time Face Recognition & Access Control System
+Large organizations with high foot traffic require a reliable way to identify and verify individuals in real time while maintaining accurate logs and continuous security monitoring. Manual verification is slow, resource-intensive, and difficult to scale, especially across multiple entrances and surveillance points.
+
+This project delivers an AI-powered face recognition and access control system that processes live video streams from IP cameras, detects and recognizes individuals from a distance, and publishes recognition events through MQTT. Authorized personnel can be automatically granted access, while every detection is logged for monitoring, auditing, and future analysis.
 
 ---
 <table>
   <tr>
-    <td>
-      <img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/logos/Fartak.png" alt="Description" width="400">
-    </td>
     <td>
       <img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/logos/insightface.jpg" alt="Description" width="400">
     </td>
