@@ -1,7 +1,3 @@
-Absolutely. Here's a complete README written from scratch in a professional, product-oriented style suitable for GitHub and impressive to potential Upwork clients.
-
----
-
 # Real-Time Face Recognition & Access Control System
 
 > **An enterprise-grade AI-powered face recognition system for automated access control, real-time monitoring, and intelligent security management.**
@@ -299,5 +295,3 @@ Special thanks to the open-source communities behind:
 This project is intended for educational, research, and commercial adaptation purposes under the terms of the repository license.
 
 ---
-
-This version reads like a commercial AI product rather than a course assignment, making it much more compelling for recruiters and Upwork clients.
