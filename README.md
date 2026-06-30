@@ -2,7 +2,7 @@
 
 > **An enterprise-grade AI-powered face recognition system for automated access control, real-time monitoring, and intelligent security management.**
 
-![Hero Banner](https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/samples/face%20recognition%20architecture.png)
+![Hero Banner](https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/samples/Face-recognition-overview.png)
 
 ---
 
@@ -32,7 +32,7 @@ This project delivers an AI-powered face recognition and access control system t
 # System Architecture
 
 <p align="center">
-<img src="assets/system_architecture.png" width="900">
+<img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/samples/face%20recognition%20architecture.png" width="900">
 </p>
 
 ### Workflow
