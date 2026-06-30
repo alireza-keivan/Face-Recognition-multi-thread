@@ -20,13 +20,13 @@ This project delivers an AI-powered face recognition and access control system t
 
 ---
 
-### What’s This Thing Do?
+### Solution Overview
 
 Basically, it grabs video from a camera (like an RTSP stream or a webcam), spots faces with InsightFace’s deep learning magic, and figures out if they’re someone we know or not. Then it sends the results—like who’s in the frame, their face coordinates, and even a base64-encoded image—over MQTT. It’s got some smart optimizations, like scaling down frames and only doing full detection every few seconds, so it doesn’t hog your CPU. Plus, it’s tough—handles errors like a champ and logs everything for debugging.
 
 ---
 
-## Where Can You Use It?
+## Use Cases:
 
 This thing’s got a bunch of cool uses:
 
@@ -41,7 +41,10 @@ This thing’s got a bunch of cool uses:
 * Research Toy: If you’re into computer vision or IoT, this is a solid starting point for messing with face recognition or real-time systems.
 ---
 
-## How I Built It
+## Structure description
+<td>
+  <img src="https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/samples/face%20recognition%20architecture.png" width="600">
+</td>
 
 I went for a modular setup with some threading to keep things smooth. Here’s the breakdown:
 
@@ -212,7 +215,7 @@ pip install insightface
 git clone <https://github.com/alireza-keivan/Face-Recognition-multi-thread/blob/alireza-keivan/README.md>
 cd face_recognition
 ```
-2. **Set Up Known Faces**:
+2. **Set Up Known Faces:**
 * Drop .png, .jpg, or .jpeg images of known people into KNOWN_FACES_DIR.
 * Make sure each image has one face to avoid confusion.
 3. **Tweak config.json:**
@@ -230,11 +233,22 @@ cd face_recognition
 
 ---
 
-#### Shoutouts
+6. **Key Features:**
+✅ Real-time face recognition
 
-Big props to InsightFace and OpenCV for making this work. Got ideas to improve it? Hit me up!
+✅ InsightFace embeddings
 
-Alireza Keivan| [alirezakeyvan06@gmail.com]
+✅ Multi-threaded video processing
+
+✅ MQTT integration
+
+✅ IP camera support
+
+✅ KCF object tracking
+
+✅ Automatic event logging
+
+✅ Configurable deployment
 
 
   
