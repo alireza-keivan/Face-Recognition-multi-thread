@@ -19,8 +19,8 @@
         "detection_height": 320
     },
     "directories": {
-        "KNOWN_FACES_DIR": "/home/.../captured_known_faces",
-        "ENCODINGS_FILE": "/home/.../known_faces_data.pkl"
+        "KNOWN_FACES_DIR": "/YOUR_ADDRESS/captured_known_faces",
+        "ENCODINGS_FILE": "/YOUR_ADDRESS/known_faces_data.pkl"
     },
     "mqtt_settings": {
         "MQTT_BROKER_ADDRESS": "",
